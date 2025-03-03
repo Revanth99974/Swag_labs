@@ -1,0 +1,92 @@
+
+*** Settings ***
+Library    SeleniumLibrary
+
+
+*** Variables ***
+${URL}          https://www.saucedemo.com/v1/
+${Browser}      Chrome
+${Username}     standard_user
+${Password}     secret_sauce
+${webelements}  //button[text()='ADD TO CART']
+${First_name}   Revanth Hanuman
+${Lastname}     Maddisetti
+${PINCODE}      534275
+
+*** Test Cases ***
+Scenario: Login To Swag labs and order product
+    Given the login page is open
+    When the user enters valid credentials
+    Then the user should be logged in and order the product
+
+*** Keywords ***
+
+the login page is open
+     open browser    ${URL}          ${Browser}
+     maximize browser window
+the user enters valid credentials
+    Input Text      name=user-name       ${Username}
+    input text      name=password         ${Password}
+    click button    ID=login-button
+the user should be logged in and order the product
+   wait until element is visible    //div[text()='Products']
+    ${elements}=      Get WebElements    ${webelements}
+    click element    ${elements[0]}
+    click element    ${elements[1]}
+#    click element    ${elements[2]}
+
+    ${No_Of_Carts}  get text    //div[@id="shopping_cart_container"]/child::a/child::span
+    click link        //div[@id='shopping_cart_container']/child::a
+    click link        //a[text()='CHECKOUT']
+    input text        id=first-name           ${First_name}
+    input text        id=last-name            ${Lastname}
+    input text        id=postal-code          ${PINCODE}
+    click element     //input[@value="CONTINUE"]
+    click element     //a[text()='FINISH']
+    ELEMENT TEXT SHOULD BE    Css=h2.complete-header    THANK YOU FOR YOUR ORDER
+    capture page screenshot
+    close browser
+    log to console    No of Products add to carts=${No_Of_Carts}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#    And the user enters click on finish button
+#    Then  user should see the message THANK YOU FOR YOUR ORDER
+#
+#*** Test Cases ***
+#Login Test
+#    open browser    ${URL}          ${Browser}
+#    maximize browser window
+#    Input Text     name=user-name       ${Username}
+#    input text    name=password         ${Password}
+#    click button    ID=login-button
+#    wait until element is visible    //div[text()='Products']
+#
+#    ${elements}=      Get WebElements    ${webelements}
+#    click element    ${elements[0]}
+#    click element    ${elements[1]}
+#    click link    //div[@id='shopping_cart_container']/child::a
+#    click link    //a[text()='CHECKOUT']
+#    input text    id=first-name         ${First_name}
+#    input text  id=last-name            ${Lastname}
+#    input text  id=postal-code          ${PINCODE}
+#    click element    //input[@value="CONTINUE"]
+#    click element   //a[text()='FINISH']
+
+
+#    capture page screenshot
+#    close browser
